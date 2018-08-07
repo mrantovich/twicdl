@@ -1,1 +1,8 @@
 twicdl: The Week in Chess Downloader
+
+Simple program for downloading PGN updates from site The Week in Chess.
+It has command line interface for the time being but there will be GUI as well.
+
+Program is in development.
+
+To contact a developer drop email on: mrantovich@gmail.com
