@@ -25,8 +25,10 @@ twconfig_dir = os.path.join(user_home, ".config/twicdl")
 twconfig = os.path.join(twconfig_dir, "twicdl.ini")
 if not os.path.exists(twconfig):
     os.makedirs(twconfig_dir, exist_ok=True)
+    big_twic_pgn = os.path.join(twdata_dir, "TWIC.pgn")
     config["DEFAULT"] = {"last_file" : "1236",
-                         "path_to_pgn_files" : twdata_dir
+                         "path_to_pgn_files" : twdata_dir,
+                         "twic_pgn" : big_twic_pgn
                          }
     with open(twconfig, "w") as twconf:
         config.write(twconf)
@@ -37,6 +39,7 @@ config.read(twconfig)
 # Variables for forming URL.
 NUMBER = int(config["DEFAULT"]["last_file"])
 PGN_PATH = config["DEFAULT"]["path_to_pgn_files"]
+BIG_TWIC = config["DEFAULT"]["twic_pgn"]
 
 
 parser = argparse.ArgumentParser()
@@ -134,7 +137,7 @@ def do_update(start_num, merge=False, verbosity=False):
     if merge:
         if verbosity:
             print("Merging files...")
-        make_one_pgn("TWIC.pgn")
+        make_one_pgn(BIG_TWIC)
     if verbosity:
         print("All done. Exiting...")
                 
