@@ -98,11 +98,6 @@ def do_update(start_num, merge=False, verbosity=False):
     num = start_num
     os.chdir(twdata_dir)
     data_content = os.listdir()
-#     if data_content:
-#         for exfile in data_content:
-#             base, ext = exfile.split(".")
-#             if ext.lower() == "pgn":
-#                 if NUMBER > base:
     while True:
         num_filename = "".join(("twic", str(num), ".pgn"))
         if num_filename in data_content:
@@ -151,37 +146,3 @@ elif args.update:
 elif args.merge:
     do_update(NUMBER, merge=True, verbosity=args.verbose)
 
-
-# def main(num, pgn_path, verbosity=False):
-#     
-#     while True:
-#         url_for_download = form_twic_url(num)
-#         filename = "".join(("twic",str(num),"g.zip"))
-#         try:
-#             if verbosity:
-#                 print("Trying to download %s..." % filename)
-#             if os.path.exists(os.path.join(pgn_path, filename)):
-#                 if verbosity:
-#                     print("%s already exists. Skipped." % filename)
-#             else:
-#                 response = urllib.request.urlopen(url_for_download)
-#                 data = response.read()
-#                 new_file = os.path.join(pgn_path,filename)
-#                 data_file = open(new_file, "wb")
-#                 data_file.write(data)
-#                 data_file.close()
-#                 if verbosity:
-#                     print("%s saved." % filename)
-#             num += 1
-#         except urllib.error.HTTPError:
-#             # HTTP Error 404: file not found on the server.
-#             # Here we must abort trying to download new files.
-#             if verbosity:
-#                 print("No such file: %s" % filename)
-#                 print("All downloads finished. Exiting...")
-#             break
-#     extract_pgn_files(pgn_path, verbosity)
-#     make_one_pgn("twic.pgn")
-
-
-    

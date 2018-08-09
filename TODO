@@ -1,3 +1,4 @@
 TODO:
 
-Detect current operating system and expand user home folder according to that.
+- Detect current operating system and expand user home folder according to that.
+- May be merge without downloading.
