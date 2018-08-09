@@ -36,12 +36,34 @@ PGN_PATH = config["DEFAULT"]["path_to_pgn_files"]
 
 
 parser = argparse.ArgumentParser()
+group = parser.add_mutually_exclusive_group()
 parser.add_argument("-v", "--verbose", help="Enable output in console",
+                    action="store_true")
+group.add_argument("-c", "--check", help="Check if updates available",
+                    action="store_true")
+group.add_argument("-u", "--update", help="Download updates",
+                    action="store_true")
+group.add_argument("-m", "--merge", help="Download updates, merge them into one file",
                     action="store_true")
 args = parser.parse_args()
 
 verbose_flag = True if args.verbose else False
 
+
+def check_updates():
+    # Not implemented yet.
+    pass
+
+def do_update(merge=False):
+    # Not implemented yet.
+    pass
+
+if args.check:
+    check_updates()
+elif args.update:
+    do_update()
+elif args.merge:
+    do_update(merge=True)
 
 def extract_pgn_files(path, verbosity=False):
     os.chdir(path)
