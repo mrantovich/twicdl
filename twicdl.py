@@ -9,20 +9,24 @@ import argparse
 import shutil
 import urllib.request
 import zipfile
+from sys import exit
 
 
-# Define where to store downloaded PGN files.
-PGN_FILES_PATH = "/home/mrantovich/dev/testdir"
-if not os.path.exists(PGN_FILES_PATH):
-    os.mkdir(PGN_FILES_PATH)
+user_home = os.path.expanduser("~")
 
+# Check if data dir exists. Create if not.
+twdata_dir = os.path.join(user_home, ".local/share/twicdl")
+if not os.path.exists(twdata_dir):
+    os.makedirs(twdata_dir)
+
+# Read config file or create new one if not exists.
 config = configparser.ConfigParser()
-twconfig_dir = os.path.expanduser("~/.config/twicdl/")
+twconfig_dir = os.path.join(user_home, ".config/twicdl")
 twconfig = os.path.join(twconfig_dir, "twicdl.ini")
 if not os.path.exists(twconfig):
     os.makedirs(twconfig_dir, exist_ok=True)
-    config["DEFAULT"] = {"last_file" : '1236',
-                         "path_to_pgn_files" : PGN_FILES_PATH
+    config["DEFAULT"] = {"last_file" : "1236",
+                         "path_to_pgn_files" : twdata_dir
                          }
     with open(twconfig, "w") as twconf:
         config.write(twconf)
@@ -50,13 +54,31 @@ args = parser.parse_args()
 verbose_flag = True if args.verbose else False
 
 
-def check_updates():
-    # Not implemented yet.
-    pass
+def form_twic_url(num):
+    BASE_TWIC_URL = "http://www.theweekinchess.com/zips/twic"
+    END_TWIC_URL = "g.zip"
+    url = "".join((BASE_TWIC_URL, str(num), END_TWIC_URL))
+    return url
+
+def check_updates(verbosity=True):
+    url_for_request = form_twic_url(NUMBER)
+    request_code = urllib.request.urlopen(url_for_request).getcode()
+    if request_code == 200:
+        if verbosity:
+            print("Some updates available!")
+    else:
+        if verbosity:
+            print("No updates detected.")
+    exit(0)
 
 def do_update(merge=False):
     # Not implemented yet.
     pass
+#     os.chdir(twdata_dir)
+#     data_content = os.listdir()
+#     if data_content:
+#         for exfile in data_content:
+#             if exfile.lower().endswith(".pgn")
 
 if args.check:
     check_updates()
@@ -89,10 +111,9 @@ def make_one_pgn(pgnpath):
                 shutil.copyfileobj(pgncontent, bigpgn, 1024*1024*10)
 
 def main(num, pgn_path, verbosity=False):
-    BASE_TWIC_URL = "http://www.theweekinchess.com/zips/twic"
-    END_TWIC_URL = "g.zip"
+    
     while True:
-        url_for_download = "".join((BASE_TWIC_URL, str(num), END_TWIC_URL))
+        url_for_download = form_twic_url(num)
         filename = "".join(("twic",str(num),"g.zip"))
         try:
             if verbosity:
