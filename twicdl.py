@@ -140,7 +140,7 @@ def do_update(start_num, merge=False, verbosity=False):
         make_one_pgn(BIG_TWIC)
     if verbosity:
         print("All done. Exiting...")
-                
+
 
 if args.check:
     check_updates()
