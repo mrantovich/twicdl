@@ -26,7 +26,7 @@ twconfig = os.path.join(twconfig_dir, "twicdl.ini")
 if not os.path.exists(twconfig):
     os.makedirs(twconfig_dir, exist_ok=True)
     big_twic_pgn = os.path.join(twdata_dir, "TWIC.pgn")
-    config["DEFAULT"] = {"last_file" : "1236",
+    config["DEFAULT"] = {"last_file" : "1240",
                          "path_to_pgn_files" : twdata_dir,
                          "twic_pgn" : big_twic_pgn
                          }
@@ -97,13 +97,15 @@ def make_one_pgn(pgnpath):
 
 def check_updates(verbosity=True):
     url_for_request = form_twic_url(NUMBER)
-    request_code = urllib.request.urlopen(url_for_request).getcode()
-    if request_code == 200:
-        if verbosity:
-            print("Some updates available!")
-    else:
-        if verbosity:
-            print("No updates detected.")
+    try:
+        request_code = urllib.request.urlopen(url_for_request).getcode()
+        if request_code == 200:
+            if verbosity:
+                print("Some updates available!")
+    except urllib.error.HTTPError as err:
+        if err.code == 404:
+            if verbosity:
+                print("No updates detected.")
     exit(0)
 
 def do_update(start_num, merge=False, verbosity=False):
@@ -143,6 +145,7 @@ def do_update(start_num, merge=False, verbosity=False):
                     print("All downloads finished.")
                 break
     extract_pgn_files(PGN_PATH, verbosity)
+    big_twic_pgn = os.path.join(twdata_dir, "TWIC.pgn")
     write_config(twconfig, num, twdata_dir, big_twic_pgn)
     if merge:
         if verbosity:
