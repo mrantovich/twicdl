@@ -9,15 +9,23 @@ import argparse
 import shutil
 import urllib.request
 import zipfile
-from sys import exit
+from sys import exit, argv, stderr
 
 
 user_home = os.path.expanduser("~")
+def write_config(configpath, num, path_to_pgn_files, twic_pgn):
+    config["DEFAULT"] = {"last_file" : num,
+                         "path_to_pgn_files" : path_to_pgn_files,
+                         "twic_pgn" : twic_pgn
+                        }
+    with open(configpath, "w") as twconf:
+        config.write(twconf)
 
 # Check if data dir exists. Create if not.
 twdata_dir = os.path.join(user_home, ".local/share/twicdl")
 if not os.path.exists(twdata_dir):
     os.makedirs(twdata_dir)
+big_twic_pgn = os.path.join(twdata_dir, "TWIC.pgn")
 
 # Read config file or create new one if not exists.
 config = configparser.ConfigParser()
@@ -25,13 +33,7 @@ twconfig_dir = os.path.join(user_home, ".config/twicdl")
 twconfig = os.path.join(twconfig_dir, "twicdl.ini")
 if not os.path.exists(twconfig):
     os.makedirs(twconfig_dir, exist_ok=True)
-    big_twic_pgn = os.path.join(twdata_dir, "TWIC.pgn")
-    config["DEFAULT"] = {"last_file" : "1240",
-                         "path_to_pgn_files" : twdata_dir,
-                         "twic_pgn" : big_twic_pgn
-                         }
-    with open(twconfig, "w") as twconf:
-        config.write(twconf)
+    write_config(twconfig, "1240", twdata_dir, big_twic_pgn)
 config.read(twconfig)
 
 
@@ -52,16 +54,10 @@ group.add_argument("-u", "--update", help="Download updates",
                     action="store_true")
 group.add_argument("-m", "--merge", help="Download updates, merge them into one file",
                     action="store_true")
+if len(argv) == 1:
+    parser.print_help(stderr)
+    exit(1)
 args = parser.parse_args()
-
-
-def write_config(configpath, num, path_to_pgn_files, twic_pgn):
-    config["DEFAULT"] = {"last_file" : num,
-                         "path_to_pgn_files" : path_to_pgn_files,
-                         "twic_pgn" : twic_pgn
-                        }
-    with open(configpath, "w") as twconf:
-        config.write(twconf)
 
 
 def form_twic_url(num):
