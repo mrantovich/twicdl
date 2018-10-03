@@ -55,6 +55,15 @@ group.add_argument("-m", "--merge", help="Download updates, merge them into one 
 args = parser.parse_args()
 
 
+def write_config(configpath, num, path_to_pgn_files, twic_pgn):
+    config["DEFAULT"] = {"last_file" : num,
+                         "path_to_pgn_files" : path_to_pgn_files,
+                         "twic_pgn" : twic_pgn
+                        }
+    with open(configpath, "w") as twconf:
+        config.write(twconf)
+
+
 def form_twic_url(num):
     BASE_TWIC_URL = "http://www.theweekinchess.com/zips/twic"
     END_TWIC_URL = "g.zip"
@@ -134,6 +143,7 @@ def do_update(start_num, merge=False, verbosity=False):
                     print("All downloads finished.")
                 break
     extract_pgn_files(PGN_PATH, verbosity)
+    write_config(twconfig, num, twdata_dir, big_twic_pgn)
     if merge:
         if verbosity:
             print("Merging files...")
