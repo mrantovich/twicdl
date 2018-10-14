@@ -13,6 +13,7 @@ from sys import exit, argv, stderr
 
 
 user_home = os.path.expanduser("~")
+
 def write_config(configpath, num, path_to_pgn_files, twic_pgn):
     config["DEFAULT"] = {"last_file" : num,
                          "path_to_pgn_files" : path_to_pgn_files,
@@ -33,7 +34,7 @@ twconfig_dir = os.path.join(user_home, ".config/twicdl")
 twconfig = os.path.join(twconfig_dir, "twicdl.ini")
 if not os.path.exists(twconfig):
     os.makedirs(twconfig_dir, exist_ok=True)
-    write_config(twconfig, "1240", twdata_dir, big_twic_pgn)
+    write_config(twconfig, "1247", twdata_dir, big_twic_pgn)
 config.read(twconfig)
 
 
@@ -50,9 +51,7 @@ parser.add_argument("-v", "--verbose", help="Enable output in console",
                     action="store_true")
 group.add_argument("-c", "--check", help="Check if updates available",
                     action="store_true")
-group.add_argument("-u", "--update", help="Download updates",
-                    action="store_true")
-group.add_argument("-m", "--merge", help="Download updates, merge them into one file",
+group.add_argument("-u", "--update", help="Download updates and merge them into one file",
                     action="store_true")
 if len(argv) == 1:
     parser.print_help(stderr)
@@ -104,7 +103,7 @@ def check_updates(verbosity=True):
                 print("No updates detected.")
     exit(0)
 
-def do_update(start_num, merge=False, verbosity=False):
+def do_update(start_num, verbosity=False):
     num = start_num
     os.chdir(twdata_dir)
     data_content = os.listdir()
@@ -143,10 +142,9 @@ def do_update(start_num, merge=False, verbosity=False):
     extract_pgn_files(PGN_PATH, verbosity)
     big_twic_pgn = os.path.join(twdata_dir, "TWIC.pgn")
     write_config(twconfig, num, twdata_dir, big_twic_pgn)
-    if merge:
-        if verbosity:
-            print("Merging files...")
-        make_one_pgn(BIG_TWIC)
+    if verbosity:
+        print("Merging files...")
+    make_one_pgn(BIG_TWIC)
     if verbosity:
         print("All done. Exiting...")
 
@@ -155,6 +153,5 @@ if args.check:
     check_updates()
 elif args.update:
     do_update(NUMBER, verbosity=args.verbose)
-elif args.merge:
-    do_update(NUMBER, merge=True, verbosity=args.verbose)
+
 
