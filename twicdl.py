@@ -90,18 +90,35 @@ def make_one_pgn(pgnpath):
             with open(pgn, "rb") as pgncontent:
                 shutil.copyfileobj(pgncontent, bigpgn, 1024*1024*10)
 
+def get_count(start_num):
+    counter = 0
+    num = start_num
+    while True:
+        url_for_request = form_twic_url(num)
+        try:
+            request_code = urllib.request.urlopen(url_for_request).getcode()
+            if request_code == 200:
+                counter += 1
+                num += 1
+        except urllib.error.HTTPError as err:
+            if err.code == 404:
+                break
+    return counter
+
 def check_updates(verbosity=True):
     url_for_request = form_twic_url(NUMBER)
     try:
         request_code = urllib.request.urlopen(url_for_request).getcode()
         if request_code == 200:
+            need_to_update = get_count(NUMBER)
             if verbosity:
-                print("Some updates available!")
+                print("There is %s files to update!" % need_to_update)
     except urllib.error.HTTPError as err:
         if err.code == 404:
             if verbosity:
                 print("No updates detected.")
     exit(0)
+
 
 def do_update(start_num, verbosity=False):
     num = start_num
