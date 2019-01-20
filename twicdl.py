@@ -37,8 +37,6 @@ if not os.path.exists(twconfig):
     write_config(twconfig, "1247", twdata_dir, big_twic_pgn)
 config.read(twconfig)
 
-
-
 # Variables for forming URL.
 NUMBER = int(config["DEFAULT"]["last_file"])
 PGN_PATH = config["DEFAULT"]["path_to_pgn_files"]
@@ -47,12 +45,18 @@ BIG_TWIC = config["DEFAULT"]["twic_pgn"]
 
 parser = argparse.ArgumentParser()
 group = parser.add_mutually_exclusive_group()
-parser.add_argument("-v", "--verbose", help="Enable output in console",
+parser.add_argument("-v",
+                    "--verbose",
+                    help="Enable output in console",
                     action="store_true")
-group.add_argument("-c", "--check", help="Check if updates available",
-                    action="store_true")
-group.add_argument("-u", "--update", help="Download updates and merge them into one file",
-                    action="store_true")
+group.add_argument("-c",
+                   "--check",
+                   help="Check if updates available",
+                   action="store_true")
+group.add_argument("-u",
+                   "--update",
+                   help="Download updates and merge them into one file",
+                   action="store_true")
 if len(argv) == 1:
     parser.print_help(stderr)
     exit(1)
@@ -90,34 +94,63 @@ def make_one_pgn(pgnpath):
             with open(pgn, "rb") as pgncontent:
                 shutil.copyfileobj(pgncontent, bigpgn, 1024*1024*10)
 
-def get_count(start_num):
-    counter = 0
-    num = start_num
+def check_updates(get_count=False, verbosity=False):
+    update_counter = 0
+    num = NUMBER
+    is_there_updates = False
     while True:
         url_for_request = form_twic_url(num)
         try:
             request_code = urllib.request.urlopen(url_for_request).getcode()
             if request_code == 200:
-                counter += 1
-                num += 1
+                is_there_updates = True
+                if get_count:
+                    update_counter += 1
+                    num += 1
+                else:
+                    break
         except urllib.error.HTTPError as err:
             if err.code == 404:
                 break
-    return counter
-
-def check_updates(verbosity=True):
-    url_for_request = form_twic_url(NUMBER)
-    try:
-        request_code = urllib.request.urlopen(url_for_request).getcode()
-        if request_code == 200:
-            need_to_update = get_count(NUMBER)
+    if is_there_updates:
+        if get_count:
             if verbosity:
-                print("There is %s files to update!" % need_to_update)
-    except urllib.error.HTTPError as err:
-        if err.code == 404:
-            if verbosity:
-                print("No updates detected.")
+                print("There is %s file(s) to update!" % update_counter)
+            return True
+    else:
+        if verbosity:
+            print("No updates detected.")
+        return False
     exit(0)
+    
+#def get_count(start_num):
+#    counter = 0
+#    num = start_num
+#    while True:
+#        url_for_request = form_twic_url(num)
+#        try:
+#            request_code = urllib.request.urlopen(url_for_request).getcode()
+#            if request_code == 200:
+#                counter += 1
+#                num += 1
+#        except urllib.error.HTTPError as err:
+#            if err.code == 404:
+#                break
+#    return counter
+
+#def check_updates(verbosity=True):
+#    url_for_request = form_twic_url(NUMBER)
+#    try:
+#        request_code = urllib.request.urlopen(url_for_request).getcode()
+#        if request_code == 200:
+#            need_to_update = get_count(NUMBER)
+#            if verbosity:
+#                print("There is %s files to update!" % need_to_update)
+#    except urllib.error.HTTPError as err:
+#        if err.code == 404:
+#            if verbosity:
+#                print("No updates detected.")
+#    exit(0)
 
 
 def do_update(start_num, verbosity=False):
@@ -167,7 +200,7 @@ def do_update(start_num, verbosity=False):
 
 
 if args.check:
-    check_updates()
+    check_updates(get_count=True, verbosity=args.verbose)
 elif args.update:
     do_update(NUMBER, verbosity=args.verbose)
 
