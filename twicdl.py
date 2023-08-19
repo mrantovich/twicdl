@@ -34,7 +34,7 @@ twconfig_dir = os.path.join(user_home, ".config/twicdl")
 twconfig = os.path.join(twconfig_dir, "twicdl.ini")
 if not os.path.exists(twconfig):
     os.makedirs(twconfig_dir, exist_ok=True)
-    write_config(twconfig, "1247", twdata_dir, big_twic_pgn)
+    write_config(twconfig, "1497", twdata_dir, big_twic_pgn)
 config.read(twconfig)
 
 # Variables for forming URL.
@@ -101,7 +101,11 @@ def check_updates(get_count=False, verbosity=False):
     while True:
         url_for_request = form_twic_url(num)
         try:
-            request_code = urllib.request.urlopen(url_for_request).getcode()
+            req = urllib.request.Request(url_for_request,
+                                         headers = {
+                                             'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36',
+                                         })
+            request_code = urllib.request.urlopen(req).getcode()
             if request_code == 200:
                 is_there_updates = True
                 if get_count:
