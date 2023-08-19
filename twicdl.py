@@ -148,7 +148,11 @@ def do_update(start_num, verbosity=False):
                     if verbosity:
                         print("%s already exists. Skipped." % filename)
                 else:
-                    response = urllib.request.urlopen(url_for_download)
+                    req = urllib.request.Request(url_for_download,
+                                         headers = {
+                                             'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36',
+                                         })
+                    response = urllib.request.urlopen(req)
                     data = response.read()
                     new_file = os.path.join(PGN_PATH,filename)
                     data_file = open(new_file, "wb")
