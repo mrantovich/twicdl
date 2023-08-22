@@ -9,10 +9,12 @@ import argparse
 import shutil
 import urllib.request
 import zipfile
-from sys import exit, argv, stderr
+from sys import exit, argv, stderr, platform
 
-
-user_home = os.path.expanduser("~")
+if platform == 'win32':
+    user_home = os.environ['APPDATA']
+else:
+    user_home = os.path.expanduser("~")
 
 def write_config(configpath, num, path_to_pgn_files, twic_pgn):
     config["DEFAULT"] = {"last_file" : num,
@@ -23,14 +25,20 @@ def write_config(configpath, num, path_to_pgn_files, twic_pgn):
         config.write(twconf)
 
 # Check if data dir exists. Create if not.
-twdata_dir = os.path.join(user_home, ".local/share/twicdl")
+if platform == 'win32':
+    twdata_dir = os.path.join(os.path.expanduser("~"), "TWICDL")
+else:
+    twdata_dir = os.path.join(user_home, ".local/share/twicdl")
 if not os.path.exists(twdata_dir):
     os.makedirs(twdata_dir)
 big_twic_pgn = os.path.join(twdata_dir, "TWIC.pgn")
 
 # Read config file or create new one if not exists.
 config = configparser.ConfigParser()
-twconfig_dir = os.path.join(user_home, ".config/twicdl")
+if platform == 'win32':
+    twconfig_dir = os.path.join(user_home, "TWICDL")
+else:
+    twconfig_dir = os.path.join(user_home, ".config/twicdl")
 twconfig = os.path.join(twconfig_dir, "twicdl.ini")
 if not os.path.exists(twconfig):
     os.makedirs(twconfig_dir, exist_ok=True)
