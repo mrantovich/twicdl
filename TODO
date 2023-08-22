@@ -1,3 +1,4 @@
 TODO:
 
-- Detect current operating system and expand user home folder according to that.
+- README: requrements (Python and so on)
+- Define first number of TWIC file (9** or something like that)
