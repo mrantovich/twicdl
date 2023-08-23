@@ -4,6 +4,13 @@
 It's simple program for downloading PGN updates from site [The Week in Chess](https://theweekinchess.com/).\
 It has command line interface for the time being but there will be GUI as well.
 
+## System requirements
+_twicdl_ can be run on Linux or Windows machine. Not tested on MacOS (I don't have one).\
+It's pure python script so only requirement is `Python 3.x`
+
+Most of Linux distro already has it installed.\
+On Windows however Python should be downloaded. It's available on [Python.org](https://www.python.org/downloads/windows/)
+
 ## How to use twicdl?
 *On linux*\
 Type `./twicdl.py --help` to see available keys.
@@ -19,7 +26,7 @@ To check if there any updates type `./twicdl.py --check --verbosity`\
 Script will say if there any files to update and how many.
 
 To update PGN database type `./twicdl.py --update --verbosity`\
-Files will be downloaded and merge into one big PGN file.\
+Files will be downloaded and merged into one big PGN file.\
 It stores as TWIC.pgn in `~/.local/share/twicdl` (on Linux) or `$HOME\TWICDL` (on Windows).
 
 ## What else?
