@@ -42,7 +42,7 @@ else:
 twconfig = os.path.join(twconfig_dir, "twicdl.ini")
 if not os.path.exists(twconfig):
     os.makedirs(twconfig_dir, exist_ok=True)
-    write_config(twconfig, "1497", twdata_dir, big_twic_pgn)
+    write_config(twconfig, "920", twdata_dir, big_twic_pgn)
 config.read(twconfig)
 
 # Variables for forming URL.

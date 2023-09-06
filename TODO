@@ -1,4 +1,3 @@
 TODO:
 
-- README: requrements (Python and so on)
-- Define first number of TWIC file (9** or something like that)
+- Initial zip-file number is 920. Should I define it as variable?
